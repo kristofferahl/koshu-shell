@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+task default {
+  depends_on test
+}
+
+task setup {
+  echo 'Setting up...'
+}
+
+task compile {
+  depends_on setup
+
+  echo 'Compiling...';
+}
+
+task test {
+  depends_on compile
+
+  echo 'Testing...';
+  curl http://google.com;
+}
