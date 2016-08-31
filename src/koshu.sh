@@ -27,8 +27,27 @@ alias error="koshu_log_error"
 
 # internals
 
+koshu_exiting=false
+koshu_arguments=()
+koshu_options=()
+koshu_available_tasks=()
+koshu_executed_tasks=()
+
+
 function koshu_version () {
   info "Koshu v. 0.1.0"
+}
+
+function koshu_logo () {
+  echo -e "${KOSHU_RESET}${KOSHU_BLUE} _  __         _
+| |/ /___  ___| |__  _   _
+| ' // _ \/ __| '_ \| | | |
+| . \ (_) \__ \ | | | |_| |
+|_|\_\___/|___/_| |_|\__,_|
+======================================================
+Koshu - The honey flavoured shell task automation tool
+======================================================${KOSHU_RESET}
+"
 }
 
 function koshu_usage () {
@@ -37,6 +56,7 @@ function koshu_usage () {
 }
 
 function koshu_help () {
+  koshu_logo
   koshu_usage
   log
   log "  <task> is the name of the task you wish to execute and"
@@ -44,6 +64,7 @@ function koshu_help () {
   log
   log "  -h, --help     Displays this help message"
   log "  -v, --version  Displays the version number"
+  log "  -i, --init     Initializes koshu"
   log "  -f <koshufile>, --file <koshufile>  Specifies the path to the koshufile (default ./koshufile)"
   log
   log "  examples:"
@@ -130,7 +151,7 @@ function koshu_depends_on () {
   fi
 }
 
-function koshu_expand_path() {
+function koshu_expand_path () {
   { cd "$(dirname "$1")" 2>/dev/null
     local dirname="$PWD"
     cd "$OLDPWD"
@@ -138,7 +159,7 @@ function koshu_expand_path() {
   } || echo "$1"
 }
 
-function koshu_set_koshufile() {
+function koshu_set_koshufile () {
   local index_of_f=$(koshu_array_indexof '-f' ${koshu_arguments[@]})
   local index_of_file=$(koshu_array_indexof '--file' ${koshu_arguments[@]})
 
@@ -155,14 +176,23 @@ function koshu_set_koshufile() {
       koshu_param_taskfile=$value_of_file
     fi
   fi
-
-  if [[ ! -f "$koshu_param_taskfile" ]]; then
-    koshu_exit "'$(koshu_expand_path "$koshu_param_taskfile")' is not a valid path for koshufile" 1
-  fi
 }
 
-koshu_arguments=()
-koshu_options=()
+function koshu_init () {
+  log 'Initializing koshu'
+  if [[ ! -f "$koshu_param_taskfile" ]]; then
+    log "Creating koshufile ($koshu_param_taskfile)"
+
+    echo "#!/usr/bin/env bash
+
+task default {
+  echo 'Hello world!'
+}
+" > "$koshu_param_taskfile"
+  else
+    log "Koshufile already exists ($koshu_param_taskfile)"
+  fi
+}
 
 for arg in "$@"; do
   if [ "${arg:0:1}" = "-" ]; then
@@ -193,6 +223,10 @@ for option in "${koshu_options[@]}"; do
   "f" | "file" )
     koshu_set_koshufile
     ;;
+  "i" | "init" )
+    koshu_init
+    koshu_exit 'Finished initializing koshu' 0
+    ;;
   * )
     koshu_usage >&2
     koshu_exit "Invalid option '$option'" 1
@@ -202,15 +236,15 @@ done
 
 # import koshufile
 
+if [[ ! -f "$koshu_param_taskfile" ]]; then
+  koshu_exit "'$(koshu_expand_path "$koshu_param_taskfile")' is not a valid path for koshufile" 1
+fi
+
 chmod +xrw "$koshu_param_taskfile"
 . "$koshu_param_taskfile" --source-only
 
-# variables (must be declared after import)
-
-koshu_exiting=false
+# variable must be set after import
 koshu_functions=($(declare -F | sed 's/declare -f //g'))
-koshu_available_tasks=()
-koshu_executed_tasks=()
 
 for f in ${koshu_functions[@]}; do
   if [[ $f != koshu_* ]]; then
