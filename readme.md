@@ -43,3 +43,7 @@ To make running koshu easier, add an alias for koshu.sh to your shell.
 Using the alias above you may now execute koshu like this:
 
     koshu <taskname>
+
+## Help
+
+    ./koshu.sh --help
