@@ -163,14 +163,14 @@ function koshu_set_koshufile () {
   local index_of_f=$(koshu_array_indexof '-f' ${koshu_arguments[@]})
   local index_of_file=$(koshu_array_indexof '--file' ${koshu_arguments[@]})
 
-  if [[ $index_of_f > -1 ]]; then
+  if [[ $index_of_f != -1 ]]; then
     local value_of_f=${koshu_arguments[$index_of_f + 1]}
     if [[ -n "$value_of_f" ]]; then
       koshu_param_taskfile=$value_of_f
     fi
   fi
 
-  if [[ $index_of_file > -1 ]]; then
+  if [[ $index_of_file != -1 ]]; then
     local value_of_file=${koshu_arguments[$index_of_file + 1]}
     if [[ -n "$value_of_file" ]]; then
       koshu_param_taskfile=$value_of_file
