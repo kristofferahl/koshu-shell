@@ -32,6 +32,7 @@ koshu_arguments=()
 koshu_options=()
 koshu_available_tasks=()
 koshu_executed_tasks=()
+koshu_silent=false
 
 
 function koshu_version () {
@@ -81,11 +82,11 @@ KOSHU_YELLOW="\033[0;93m"
 KOSHU_GRAY="\033[0;90m"
 KOSHU_RESET="\033[0m"
 
-function koshu_log_verbose() { echo -e "${KOSHU_RESET}${KOSHU_GRAY}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_success() { echo -e "${KOSHU_RESET}${KOSHU_GREEN}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_info() { echo -e "${KOSHU_RESET}${KOSHU_BLUE}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_warn() { echo -e "${KOSHU_RESET}${KOSHU_YELLOW}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_error() { echo -e "${KOSHU_RESET}${KOSHU_RED}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_verbose() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GRAY}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_success() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GREEN}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_info() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_BLUE}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_warn() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_YELLOW}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_error() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_RED}koshu: ${1}${KOSHU_RESET}"; }
 
 function koshu_exit () {
   local exitcode=${2:-$?}
@@ -222,6 +223,9 @@ for option in "${koshu_options[@]}"; do
     ;;
   "f" | "file" )
     koshu_set_koshufile
+    ;;
+  "s" | "silent" )
+    koshu_silent=true
     ;;
   "i" | "init" )
     koshu_init
