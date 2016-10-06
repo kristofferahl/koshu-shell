@@ -63,8 +63,11 @@ function koshu_help () {
   verbose "  <task> is the name of the task you wish to execute and"
   verbose "  is always the last argument."
   verbose
+  verbose "  options:"
+  verbose
   verbose "  -h, --help     Displays this help message"
   verbose "  -v, --version  Displays the version number"
+  verbose "  -s, --silent   Suppress output from koshu"
   verbose "  -i, --init     Initializes koshu"
   verbose "  -f <koshufile>, --file <koshufile>  Specifies the path to the koshufile (default ./koshufile)"
   verbose
