@@ -36,7 +36,7 @@ koshu_silent=false
 
 
 function koshu_version () {
-  info "Koshu v. 0.1.0"
+  info "Koshu v. 0.2.0"
 }
 
 function koshu_logo () {
