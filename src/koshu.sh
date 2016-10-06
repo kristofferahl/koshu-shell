@@ -19,7 +19,7 @@ shopt -s expand_aliases
 alias task="function"
 alias depends_on="koshu_depends_on"
 
-alias log="koshu_log_verbose"
+alias verbose="koshu_log_verbose"
 alias success="koshu_log_success"
 alias info="koshu_log_info"
 alias warn="koshu_log_warn"
@@ -59,20 +59,20 @@ function koshu_usage () {
 function koshu_help () {
   koshu_logo
   koshu_usage
-  log
-  log "  <task> is the name of the task you wish to execute and"
-  log "  is always the last argument."
-  log
-  log "  -h, --help     Displays this help message"
-  log "  -v, --version  Displays the version number"
-  log "  -i, --init     Initializes koshu"
-  log "  -f <koshufile>, --file <koshufile>  Specifies the path to the koshufile (default ./koshufile)"
-  log
-  log "  examples:"
-  log
-  log "    ./koshu.sh compile"
-  log "    ./koshu.sh --file ./path/to/koshufile copy:all"
-  log
+  verbose
+  verbose "  <task> is the name of the task you wish to execute and"
+  verbose "  is always the last argument."
+  verbose
+  verbose "  -h, --help     Displays this help message"
+  verbose "  -v, --version  Displays the version number"
+  verbose "  -i, --init     Initializes koshu"
+  verbose "  -f <koshufile>, --file <koshufile>  Specifies the path to the koshufile (default ./koshufile)"
+  verbose
+  verbose "  examples:"
+  verbose
+  verbose "    ./koshu.sh compile"
+  verbose "    ./koshu.sh --file ./path/to/koshufile copy:all"
+  verbose
 }
 
 KOSHU_BLUE="\033[1;94m"
@@ -180,9 +180,9 @@ function koshu_set_koshufile () {
 }
 
 function koshu_init () {
-  log 'Initializing koshu'
+  verbose 'Initializing koshu'
   if [[ ! -f "$koshu_param_taskfile" ]]; then
-    log "Creating koshufile ($koshu_param_taskfile)"
+    verbose "Creating koshufile ($koshu_param_taskfile)"
 
     echo "#!/usr/bin/env bash
 
@@ -191,7 +191,7 @@ task default {
 }
 " > "$koshu_param_taskfile"
   else
-    log "Koshufile already exists ($koshu_param_taskfile)"
+    verbose "Koshufile already exists ($koshu_param_taskfile)"
   fi
 }
 
