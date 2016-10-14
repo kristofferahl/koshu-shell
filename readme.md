@@ -4,9 +4,21 @@
 
 Task automation for shell
 
+## Installation
+
+### Local
+
+Simply download koshu.sh to your project directory and execute koshu by typing `./koshu.sh`. To make running your "project local" koshu easier, you add an alias for koshu.sh to your shell.
+
+    alias koshu='./koshu.sh'
+
+### Global
+
+You can install koshu globally using `npm install koshu -g` and execute it by typing `koshu`.
+
 ## Setup
 
-Download koshu.sh to a directory and run ./koshu.sh init to create a "koshufile" in the same directory.
+Run koshu init to create a "koshufile" in the current directory.
 
 ## Koshufile
 
@@ -34,17 +46,9 @@ You can define dependencies between your tasks by using the depends_on keyword f
 
 In the example above, the compile task will be executed before any code placed after the depends_on statement is executed. A single task will never be executed more than once.
 
-## Running koshu
+## Executing tasks
 
     ./koshu.sh <taskname>
-
-To make running koshu easier, add an alias for koshu.sh to your shell.
-
-    alias koshu='./koshu.sh'
-
-Using the alias above you may now execute koshu like this:
-
-    koshu <taskname>
 
 ## Help
 
