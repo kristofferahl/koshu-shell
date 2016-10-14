@@ -183,8 +183,8 @@ function koshu_run () {
   cd $here
 
   # import koshufile
-  chmod +xrw "$koshu_param_taskfile"
-  . "$koshu_param_taskfile" --source-only
+  chmod +xrw "./koshufile"
+  . "./koshufile" --source-only
 
   # variable must be set after importing koshufile
   koshu_functions=($(declare -F | sed 's/declare -f //g'))
