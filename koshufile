@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Dogfooding... Using koshu to bake koshu.
+
+sourceDir="$here"
+testDir="$here/../test"
+
+export KOSHU_SOURCE_DIR=$sourceDir
+
+task test {
+  tests=()
+  while read x; do
+    verbose "Adding test '$x' to testrun"
+    tests+=("$testDir/$x/test.bats")
+  done <<<"$(ls $testDir)"
+
+  bats -p ${tests[*]}
+}
