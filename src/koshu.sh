@@ -154,14 +154,6 @@ function koshu_depends_on () {
   fi
 }
 
-function koshu_expand_path () {
-  { cd "$(dirname "$1")" 2>/dev/null
-    local dirname="$PWD"
-    cd "$OLDPWD"
-    echo "$dirname/$(basename "$1")"
-  } || echo "$1"
-}
-
 function koshu_init () {
   verbose 'Initializing koshu'
   if [[ ! -f "$koshu_param_taskfile" ]]; then
