@@ -33,7 +33,7 @@ koshu_available_tasks=()
 koshu_executed_tasks=()
 
 function koshu_version () {
-  info "Koshu v. 0.2.0"
+  info "Koshu v. 0.3.0"
 }
 
 function koshu_logo () {
@@ -50,28 +50,30 @@ Koshu - The honey flavoured shell task automation tool
 
 function koshu_usage () {
   koshu_version
-  info "Usage: ./koshu.sh [-h] [-v] [...] <task>"
+  info "Usage: ./koshu.sh [<command|task>] [--<option>]"
 }
 
 function koshu_help () {
   koshu_logo
   koshu_usage
   verbose
-  verbose "  <task> is the name of the task you wish to execute and"
-  verbose "  is always the last argument."
+  verbose "  The first argument must be a <command> or a <task> where"
+  verbose "  the value is the name of a task you wish to execute"
+  verbose "  or the name of a koshu command."
+  verbose
+  verbose "  commands:"
+  verbose "    init                        Initialized koshu"
+  verbose "    help                        Displays this help message"
+  verbose "    version                     Displays the version number"
+  verbose "    run <task1> <task2>         Run task"
   verbose
   verbose "  options:"
-  verbose
-  verbose "  -h, --help     Displays this help message"
-  verbose "  -v, --version  Displays the version number"
-  verbose "  -s, --silent   Suppress output from koshu"
-  verbose "  -i, --init     Initializes koshu"
-  verbose "  -f <koshufile>, --file <koshufile>  Specifies the path to the koshufile (default ./koshufile)"
+  verbose "    -s, --silent                Suppress output from koshu"
+  verbose "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
   verbose
   verbose "  examples:"
-  verbose
   verbose "    ./koshu.sh compile"
-  verbose "    ./koshu.sh --file ./path/to/koshufile copy:all"
+  verbose "    ./koshu.sh test:all --file ./path/to/koshufile"
   verbose
 }
 
@@ -201,6 +203,8 @@ function koshu_run () {
     if [[ "$(koshu_array_contains $t ${koshu_available_tasks[@]})" = "true" ]]; then
       koshu_exec_task $t
     else
+      koshu_usage
+      info "Run \"koshu help\" for more info."
       koshu_exit "Task '$t' is not defined. Available tasks: $(koshu_array_print koshu_available_tasks[@])" 1
     fi
   done

@@ -4,7 +4,7 @@ Task automation for shell
 
 ## Setup
 
-Download koshu.sh to a directory and create a file named "koshufile" in the same directory.
+Download koshu.sh to a directory and run ./koshu.sh init to create a "koshufile" in the same directory.
 
 ## Koshufile
 
@@ -46,4 +46,6 @@ Using the alias above you may now execute koshu like this:
 
 ## Help
 
-    ./koshu.sh --help
+For more info on using koshu, please run the help command.
+
+    ./koshu.sh help
