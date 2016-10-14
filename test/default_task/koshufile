@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+task default {
+  echo 'Default task'
+}

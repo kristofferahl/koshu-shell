@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+task default {
+  verbose 'verbose'
+  success 'success'
+  info 'info'
+  warn 'warn'
+  error 'error'
+}

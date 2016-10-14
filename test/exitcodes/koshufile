@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+task default {
+  koshu_exit "Exiting with code 123" 123
+}

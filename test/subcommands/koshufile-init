@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+task default {
+  echo 'Hello world!'
+}
+
