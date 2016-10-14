@@ -42,7 +42,7 @@ function koshu_logo () {
 | . \ (_) \__ \ | | | |_| |
 |_|\_\___/|___/_| |_|\__,_|
 ======================================================
-Koshu - The honey flavoured shell task automation tool
+Koshu - The honey flavoured task automation tool
 ======================================================${KOSHU_RESET}
 "
 }

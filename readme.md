@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/kristofferahl/koshu-shell](https://badges.gitter.im/kristofferahl/koshu-shell.svg)](https://gitter.im/kristofferahl/koshu-shell?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Task automation for shell
+The honey flavoured task automation tool
 
 ## Installation
 
