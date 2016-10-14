@@ -2,8 +2,8 @@
 
 # Dogfooding... Using koshu to bake koshu.
 
-sourceDir="$here"
-testDir="$here/../test"
+sourceDir="$here/src"
+testDir="$here/test"
 
 export KOSHU_SOURCE_DIR=$sourceDir
 

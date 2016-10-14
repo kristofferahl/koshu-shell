@@ -6,7 +6,6 @@ set -e
 trap koshu_exit INT TERM EXIT
 
 here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $here
 
 # parameters
 
@@ -173,12 +172,17 @@ task default {
 function koshu_run () {
   local tasklist=("${!1}")
 
-  # import koshufile
-
+  # ensure koshufile is located in the context of the current directory
+  cd "$( pwd )"
   if [[ ! -f "$koshu_param_taskfile" ]]; then
     koshu_exit "'$koshu_param_taskfile' is not a valid path for koshufile" 1
   fi
 
+  # ensure here is set properly before sourcing koshufile
+  here="$( cd "$( dirname "$koshu_param_taskfile" )" && pwd )"
+  cd $here
+
+  # import koshufile
   chmod +xrw "$koshu_param_taskfile"
   . "$koshu_param_taskfile" --source-only
 
