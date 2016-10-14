@@ -32,7 +32,7 @@ koshu_available_tasks=()
 koshu_executed_tasks=()
 
 function koshu_version () {
-  info "Koshu v. 0.3.0"
+  info "Koshu v. 0.4.0"
 }
 
 function koshu_logo () {
