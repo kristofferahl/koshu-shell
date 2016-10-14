@@ -1,0 +1,24 @@
+{
+  "name": "koshu",
+  "version": "0.3.0",
+  "description": "The honey flavoured task automation tool",
+  "bin": {
+    "koshu": "./src/koshu.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristofferahl/koshu-shell.git"
+  },
+  "keywords": [
+    "bash",
+    "task",
+    "runner",
+    "automation"
+  ],
+  "author": "Kristoffer Ahl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kristofferahl/koshu-shell/issues"
+  },
+  "homepage": "https://github.com/kristofferahl/koshu-shell#readme"
+}

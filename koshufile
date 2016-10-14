@@ -16,3 +16,11 @@ task test {
 
   bats -p ${tests[*]}
 }
+
+task install {
+  sudo npm install -g
+}
+
+task uninstall {
+  sudo npm uninstall -g
+}
