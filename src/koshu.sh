@@ -10,8 +10,9 @@ cd $here
 
 # parameters
 
-koshu_param_taskname=${BASH_ARGV:-'default'}
+koshu_param_tasklist=()
 koshu_param_taskfile='./koshufile'
+koshu_param_silent=false
 
 # koshufile aliases
 
@@ -28,12 +29,8 @@ alias error="koshu_log_error"
 # internals
 
 koshu_exiting=false
-koshu_arguments=()
-koshu_options=()
 koshu_available_tasks=()
 koshu_executed_tasks=()
-koshu_silent=false
-
 
 function koshu_version () {
   info "Koshu v. 0.2.0"
@@ -85,11 +82,11 @@ KOSHU_YELLOW="\033[0;93m"
 KOSHU_GRAY="\033[0;90m"
 KOSHU_RESET="\033[0m"
 
-function koshu_log_verbose() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GRAY}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_success() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GREEN}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_info() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_BLUE}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_warn() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_YELLOW}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_error() { [[ $koshu_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_RED}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_verbose() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GRAY}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_success() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GREEN}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_info() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_BLUE}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_warn() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_YELLOW}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_error() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_RED}koshu: ${1}${KOSHU_RESET}"; }
 
 function koshu_exit () {
   local exitcode=${2:-$?}
@@ -163,25 +160,6 @@ function koshu_expand_path () {
   } || echo "$1"
 }
 
-function koshu_set_koshufile () {
-  local index_of_f=$(koshu_array_indexof '-f' ${koshu_arguments[@]})
-  local index_of_file=$(koshu_array_indexof '--file' ${koshu_arguments[@]})
-
-  if [[ $index_of_f != -1 ]]; then
-    local value_of_f=${koshu_arguments[$index_of_f + 1]}
-    if [[ -n "$value_of_f" ]]; then
-      koshu_param_taskfile=$value_of_f
-    fi
-  fi
-
-  if [[ $index_of_file != -1 ]]; then
-    local value_of_file=${koshu_arguments[$index_of_file + 1]}
-    if [[ -n "$value_of_file" ]]; then
-      koshu_param_taskfile=$value_of_file
-    fi
-  fi
-}
-
 function koshu_init () {
   verbose 'Initializing koshu'
   if [[ ! -f "$koshu_param_taskfile" ]]; then
@@ -198,70 +176,107 @@ task default {
   fi
 }
 
-for arg in "$@"; do
-  if [ "${arg:0:1}" = "-" ]; then
-    if [ "${arg:1:1}" = "-" ]; then
-      koshu_options[${#koshu_options[*]}]="${arg:2}"
+function koshu_run () {
+  local tasklist=("${!1}")
+
+  # import koshufile
+
+  if [[ ! -f "$koshu_param_taskfile" ]]; then
+    koshu_exit "'$koshu_param_taskfile' is not a valid path for koshufile" 1
+  fi
+
+  chmod +xrw "$koshu_param_taskfile"
+  . "$koshu_param_taskfile" --source-only
+
+  # variable must be set after importing koshufile
+  koshu_functions=($(declare -F | sed 's/declare -f //g'))
+
+  for f in ${koshu_functions[@]}; do
+    if [[ $f != koshu_* ]]; then
+      koshu_available_tasks+=("$f")
+    fi
+  done
+
+  for t in ${tasklist[@]}; do
+    if [[ "$(koshu_array_contains $t ${koshu_available_tasks[@]})" = "true" ]]; then
+      koshu_exec_task $t
     else
-      index=1
-      while option="${arg:$index:1}"; do
-        [ -n "$option" ] || break
-        koshu_options[${#koshu_options[*]}]="$option"
-        let index+=1
-      done
+      koshu_exit "Task '$t' is not defined. Available tasks: $(koshu_array_print koshu_available_tasks[@])" 1
+    fi
+  done
+}
+
+parser_arguments=("$@")
+parser_commands=()
+parser_options=()
+parser_index=0
+
+for arg in ${parser_arguments[*]}; do
+  if [[ "${arg:0:1}" = "-" ]]; then
+    if [[ "${arg:1:1}" != "-" ]]; then
+      key="${arg:1}"
+    else
+      key="${arg:2}"
+    fi
+
+    value=${parser_arguments[parser_index+1]:-true}
+    if [[ "${value:0:1}" = "-" ]]; then
+      value=true
+    fi
+
+    parser_options+=("$key"="$value")
+  else
+    if [[ ${#parser_options[*]} -eq 0 ]]; then
+      parser_commands+=("$arg")
     fi
   fi
-  koshu_arguments[${#koshu_arguments[*]}]="$arg"
+  (( parser_index++ ))
 done
 
-for option in "${koshu_options[@]}"; do
+for kvp in "${parser_options[@]}"; do
+  option=(${kvp//=/ }[0])
+  value=${kvp#*=}
+
   case "$option" in
-  "h" | "help" )
-    koshu_help
-    koshu_exit '' 0
-    ;;
-  "v" | "version" )
-    koshu_version
-    koshu_exit '' 0
-    ;;
-  "f" | "file" )
-    koshu_set_koshufile
-    ;;
-  "s" | "silent" )
-    koshu_silent=true
-    ;;
-  "i" | "init" )
-    koshu_init
-    koshu_exit 'Finished initializing koshu' 0
-    ;;
-  * )
-    koshu_usage >&2
-    koshu_exit "Invalid option '$option'" 1
-    ;;
+    "f" | "file" )
+      koshu_param_taskfile=$value
+      ;;
+    "s" | "silent" )
+      koshu_param_silent=true
+      ;;
+    * )
+      koshu_usage >&2
+      koshu_exit "Invalid option '$option'" 1
+      ;;
   esac
 done
 
-# import koshufile
-
-if [[ ! -f "$koshu_param_taskfile" ]]; then
-  koshu_exit "'$(koshu_expand_path "$koshu_param_taskfile")' is not a valid path for koshufile" 1
-fi
-
-chmod +xrw "$koshu_param_taskfile"
-. "$koshu_param_taskfile" --source-only
-
-# variable must be set after import
-koshu_functions=($(declare -F | sed 's/declare -f //g'))
-
-for f in ${koshu_functions[@]}; do
-  if [[ $f != koshu_* ]]; then
-    koshu_available_tasks+=("$f")
-  fi
+for c in "${parser_commands[@]}"; do
+  case "$c" in
+    "help" )
+      koshu_help
+      koshu_exit '' 0
+      ;;
+    "version" )
+      koshu_version
+      koshu_exit '' 0
+      ;;
+    "init" )
+      koshu_init
+      koshu_exit 'Finished initializing koshu' 0
+      ;;
+    "run" )
+      koshu_param_tasklist=("${parser_commands[*]:1}")
+      ;;
+    * ) # Unknown commands must map to task names
+      koshu_param_tasklist+=("$c")
+      ;;
+  esac
 done
 
-if [[ "$(koshu_array_contains $koshu_param_taskname ${koshu_available_tasks[@]})" = "true" ]]; then
-  koshu_exec_task $koshu_param_taskname
-  koshu_exit "Finished executing tasks ($(koshu_array_print koshu_executed_tasks[@] ' %s '))"
-else
-  koshu_exit "Task '$koshu_param_taskname' is not defined. Available tasks: $(koshu_array_print koshu_available_tasks[@])" 1
+if [[ "${#koshu_param_tasklist[*]}" -lt 1 ]]; then
+  koshu_param_tasklist=('default')
 fi
+
+koshu_run koshu_param_tasklist[@]
+koshu_exit "Finished executing tasks ($(koshu_array_print koshu_executed_tasks[@] ' %s '))" 0
