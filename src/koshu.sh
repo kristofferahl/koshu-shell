@@ -71,6 +71,7 @@ function koshu_help () {
   verbose "  options:"
   verbose "    -s, --silent                Suppress output from koshu"
   verbose "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
+  verbose "    -p <name=value>, --param <name=value>    Sets a variable before tasks are executed"
   verbose
   verbose "  examples:"
   verbose "    ./koshu.sh compile"
