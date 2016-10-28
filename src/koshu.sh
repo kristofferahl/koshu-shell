@@ -5,21 +5,19 @@
 set -e
 trap koshu_exit INT TERM EXIT
 
-here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 # parameters
 
-koshu_param_tasklist=()
-koshu_param_taskfile='./koshufile'
-koshu_param_silent=false
+declare -a koshu_param_tasklist=()
+declare koshu_param_taskfile='./koshufile'
+declare koshu_param_silent=false
 
 # koshufile aliases
 
 shopt -s expand_aliases
+
 alias task="function"
 alias param="koshu_set_param"
 alias depends_on="koshu_depends_on"
-
 alias verbose="koshu_log_verbose"
 alias success="koshu_log_success"
 alias info="koshu_log_info"
@@ -28,24 +26,25 @@ alias error="koshu_log_error"
 
 # internals
 
-koshu_exiting=false
-koshu_available_tasks=()
-koshu_executed_tasks=()
-koshu_params=()
+declare -r koshu_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+declare koshu_exiting=false
+declare -a koshu_available_tasks=()
+declare -a koshu_executed_tasks=()
+declare -a koshu_params=()
 
 function koshu_version () {
   info "Koshu v. 0.4.0"
 }
 
 function koshu_logo () {
-  echo -e "${KOSHU_RESET}${KOSHU_BLUE} _  __         _
+  echo -e "${koshu_reset}${koshu_blue} _  __         _
 | |/ /___  ___| |__  _   _
 | ' // _ \/ __| '_ \| | | |
 | . \ (_) \__ \ | | | |_| |
 |_|\_\___/|___/_| |_|\__,_|
 ======================================================
 Koshu - The honey flavoured task automation tool
-======================================================${KOSHU_RESET}
+======================================================${koshu_reset}
 "
 }
 
@@ -78,18 +77,18 @@ function koshu_help () {
   verbose
 }
 
-KOSHU_BLUE="\033[1;94m"
-KOSHU_GREEN="\033[1;92m"
-KOSHU_RED="\033[0;91m"
-KOSHU_YELLOW="\033[0;93m"
-KOSHU_GRAY="\033[0;90m"
-KOSHU_RESET="\033[0m"
+declare -r koshu_blue="\033[1;94m"
+declare -r koshu_green="\033[1;92m"
+declare -r koshu_red="\033[0;91m"
+declare -r koshu_yellow="\033[0;93m"
+declare -r koshu_gray="\033[0;90m"
+declare -r koshu_reset="\033[0m"
 
-function koshu_log_verbose() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GRAY}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_success() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_GREEN}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_info() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_BLUE}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_warn() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_YELLOW}koshu: ${1}${KOSHU_RESET}"; }
-function koshu_log_error() { [[ $koshu_param_silent = true ]] || echo -e "${KOSHU_RESET}${KOSHU_RED}koshu: ${1}${KOSHU_RESET}"; }
+function koshu_log_verbose() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_gray}koshu: ${1}${koshu_reset}"; }
+function koshu_log_success() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_green}koshu: ${1}${koshu_reset}"; }
+function koshu_log_info() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_blue}koshu: ${1}${koshu_reset}"; }
+function koshu_log_warn() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_yellow}koshu: ${1}${koshu_reset}"; }
+function koshu_log_error() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_red}koshu: ${1}${koshu_reset}"; }
 
 function koshu_exit () {
   local exitcode=${2:-$?}
@@ -194,7 +193,7 @@ function koshu_run () {
   fi
 
   # ensure here is set properly before sourcing koshufile
-  here="$( cd "$( dirname "$koshu_param_taskfile" )" && pwd )"
+  declare -r here="$( cd "$( dirname "$koshu_param_taskfile" )" && pwd )"
   cd $here
 
   # import koshufile
@@ -221,62 +220,66 @@ function koshu_run () {
   done
 }
 
-parser_arguments=("$@")
-parser_commands=()
-parser_options=()
-parser_index=0
+declare -ar parser_arguments=("$@")
+declare -a parser_commands=()
+declare -a parser_options=()
+declare parser_index=0
+declare parser_argument
+declare parser_option
+declare parser_command
+declare parser_key
+declare parser_value
 
-for arg in "${parser_arguments[@]}"; do
-  if [[ "${arg:0:1}" = "-" ]]; then
-    if [[ "${arg:1:1}" != "-" ]]; then
-      key="${arg:1}"
+for parser_argument in "${parser_arguments[@]}"; do
+  if [[ "${parser_argument:0:1}" = "-" ]]; then
+    if [[ "${parser_argument:1:1}" != "-" ]]; then
+      parser_key="${parser_argument:1}"
     else
-      key="${arg:2}"
+      parser_key="${parser_argument:2}"
     fi
 
-    value=${parser_arguments[parser_index+1]:-true}
-    if [[ "${value:0:1}" = "-" ]]; then
-      value=true
+    parser_value=${parser_arguments[parser_index+1]:-true}
+    if [[ "${parser_value:0:1}" = "-" ]]; then
+      parser_value=true
     fi
 
-    parser_options+=("$key=$value")
+    parser_options+=("$parser_key=$parser_value")
   else
     if [[ ${#parser_options[*]} -eq 0 ]]; then
-      parser_commands+=("$arg")
+      parser_commands+=("$parser_argument")
     fi
   fi
   (( parser_index++ ))
 done
 
-for kvp in "${parser_options[@]}"; do
-  regex='^([^=]+)=(.*)$'
-  if [[ "$kvp" =~ $regex ]]; then
-    option="${BASH_REMATCH[1]}"
-    value="${BASH_REMATCH[2]}"
+for parser_option in "${parser_options[@]}"; do
+  if [[ "$parser_option" =~ '^([^=]+)=(.*)$' ]]; then
+    parser_key="${BASH_REMATCH[1]}"
+    parser_value="${BASH_REMATCH[2]}"
   else
-    option=(${kvp//=/ }[0])
-    value=${kvp#*=}
+    parser_key=(${parser_option//=/ }[0])
+    parser_value=${parser_option#*=}
   fi
 
-  case "$option" in
+  case "$parser_key" in
     "f" | "file" )
-      koshu_param_taskfile=$value
+      koshu_param_taskfile="$parser_value"
       ;;
     "p" | "param" )
-      koshu_set_param "$value"
+      koshu_set_param "$parser_value"
       ;;
     "s" | "silent" )
       koshu_param_silent=true
       ;;
     * )
       koshu_usage >&2
-      koshu_exit "Invalid option '$option'" 1
+      koshu_exit "Invalid option '$parser_key'" 1
       ;;
   esac
 done
 
-for c in "${parser_commands[@]}"; do
-  case "$c" in
+for parser_command in "${parser_commands[@]}"; do
+  case "$parser_command" in
     "help" )
       koshu_help
       koshu_exit '' 0
@@ -293,7 +296,7 @@ for c in "${parser_commands[@]}"; do
       koshu_param_tasklist=("${parser_commands[*]:1}")
       ;;
     * ) # Unknown commands must map to task names
-      koshu_param_tasklist+=("$c")
+      koshu_param_tasklist+=("$parser_command")
       ;;
   esac
 done
