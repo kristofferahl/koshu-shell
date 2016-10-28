@@ -50,6 +50,36 @@ In the example above, the compile task will be executed before any code placed a
 
     ./koshu.sh <taskname>
 
+## Parameters and environment variables
+
+### Parameters
+
+Parameters you want set as variables can be passed to koshu by providing the `-p` or `--param` option followed by a name/value pair.
+
+    ./koshu.sh <taskname> --param foo=bar
+
+Default values can be set in your koshufile using the `param` function.
+
+    param foo='default value'
+
+    task default {
+      echo "$foo"
+    }
+
+### Environment variables
+
+Parameters you want set as environment variables can be passed to koshu by providing the `-e` or `--env` option followed by a name/value pair.
+
+    ./koshu.sh <taskname> --env FOO=bar
+
+Default values are currently not supported for the `-e` or `--env` option.
+
+### NOTE: Spaces
+
+If a value includes spaces you need to quote it!
+
+    ./koshu.sh <taskname> --param foo='some value for foo' --env BAR='some value for BAR'
+
 ## Help
 
 For more info on using koshu, please run the help command.
