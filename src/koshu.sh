@@ -17,6 +17,7 @@ koshu_param_silent=false
 
 shopt -s expand_aliases
 alias task="function"
+alias param="koshu_set_param"
 alias depends_on="koshu_depends_on"
 
 alias verbose="koshu_log_verbose"
@@ -30,6 +31,7 @@ alias error="koshu_log_error"
 koshu_exiting=false
 koshu_available_tasks=()
 koshu_executed_tasks=()
+koshu_params=()
 
 function koshu_version () {
   info "Koshu v. 0.4.0"
@@ -153,6 +155,19 @@ function koshu_depends_on () {
   fi
 }
 
+function koshu_set_param () {
+  local value="$1"
+  local param_name=(${value//=/ }[0])
+  local param_value="${value#*=}"
+
+  if [ "$param_name" != "" ] && [ "$param_name" != "$param_value[0]" ]; then
+    if [ "$(koshu_array_contains $param_name ${koshu_params[@]})" != "true" ]; then
+      printf -v "${param_name}" '%s' "${param_value}"
+      koshu_params+=("$param_name")
+    fi
+  fi
+}
+
 function koshu_init () {
   verbose 'Initializing koshu'
   if [[ ! -f "$koshu_param_taskfile" ]]; then
@@ -211,7 +226,7 @@ parser_commands=()
 parser_options=()
 parser_index=0
 
-for arg in ${parser_arguments[*]}; do
+for arg in "${parser_arguments[@]}"; do
   if [[ "${arg:0:1}" = "-" ]]; then
     if [[ "${arg:1:1}" != "-" ]]; then
       key="${arg:1}"
@@ -224,7 +239,7 @@ for arg in ${parser_arguments[*]}; do
       value=true
     fi
 
-    parser_options+=("$key"="$value")
+    parser_options+=("$key=$value")
   else
     if [[ ${#parser_options[*]} -eq 0 ]]; then
       parser_commands+=("$arg")
@@ -234,12 +249,21 @@ for arg in ${parser_arguments[*]}; do
 done
 
 for kvp in "${parser_options[@]}"; do
-  option=(${kvp//=/ }[0])
-  value=${kvp#*=}
+  regex='^([^=]+)=(.*)$'
+  if [[ "$kvp" =~ $regex ]]; then
+    option="${BASH_REMATCH[1]}"
+    value="${BASH_REMATCH[2]}"
+  else
+    option=(${kvp//=/ }[0])
+    value=${kvp#*=}
+  fi
 
   case "$option" in
     "f" | "file" )
       koshu_param_taskfile=$value
+      ;;
+    "p" | "param" )
+      koshu_set_param "$value"
       ;;
     "s" | "silent" )
       koshu_param_silent=true

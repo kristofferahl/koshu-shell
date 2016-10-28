@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+param p1='default value'
+param p2='default value'
+param p3='default value'
+
+task default {
+  echo "$p1.$p2.$p3."
+}
