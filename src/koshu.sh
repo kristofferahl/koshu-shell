@@ -26,6 +26,7 @@ alias error="koshu_log_error"
 
 # internals
 
+declare -r koshu_version='0.4.0'
 declare -r koshu_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 declare koshu_exiting=false
 declare -a koshu_available_tasks=()
@@ -33,7 +34,7 @@ declare -a koshu_executed_tasks=()
 declare -a koshu_params=()
 
 function koshu_version () {
-  info "Koshu v. 0.4.0"
+  info "Koshu v. $koshu_version"
 }
 
 function koshu_logo () {
