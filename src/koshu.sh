@@ -32,6 +32,7 @@ declare koshu_exiting=false
 declare -a koshu_available_tasks=()
 declare -a koshu_executed_tasks=()
 declare -a koshu_params=()
+declare -a koshu_envs=()
 
 function koshu_version () {
   info "Koshu v. $koshu_version"
@@ -72,7 +73,8 @@ function koshu_help () {
   verbose "  options:"
   verbose "    -s, --silent                Suppress output from koshu"
   verbose "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
-  verbose "    -p <name=value>, --param <name=value>    Sets a variable before tasks are executed"
+  verbose "    -p <name=value>, --param <name=value>    Sets variable before tasks are executed"
+  verbose "    -e <name=value>, --env <name=value>    Sets environment variable before tasks are executed"
   verbose
   verbose "  examples:"
   verbose "    ./koshu.sh compile"
@@ -166,6 +168,19 @@ function koshu_set_param () {
     if [ "$(koshu_array_contains $param_name ${koshu_params[@]})" != "true" ]; then
       printf -v "${param_name}" '%s' "${param_value}"
       koshu_params+=("$param_name")
+    fi
+  fi
+}
+
+function koshu_set_env () {
+  local value="$1"
+  local env_name=(${value//=/ }[0])
+  local env_value="${value#*=}"
+
+  if [ "$env_name" != "" ] && [ "$env_name" != "$env_value[0]" ]; then
+    if [ "$(koshu_array_contains $env_name ${koshu_envs[@]})" != "true" ]; then
+      eval "export $env_name'=${env_value}'"
+      koshu_envs+=("$env_name")
     fi
   fi
 }
@@ -272,6 +287,9 @@ for parser_option in "${parser_options[@]}"; do
       ;;
     "p" | "param" )
       koshu_set_param "$parser_value"
+      ;;
+    "e" | "env" )
+      koshu_set_env "$parser_value"
       ;;
     "s" | "silent" )
       koshu_param_silent=true

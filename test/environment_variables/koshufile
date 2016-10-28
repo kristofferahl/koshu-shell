@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+task default {
+  env | grep TEST_ENV_ | sort
+}
