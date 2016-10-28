@@ -66,6 +66,7 @@ function koshu_help () {
   verbose "    init                        Initialized koshu"
   verbose "    help                        Displays this help message"
   verbose "    version                     Displays the version number"
+  verbose "    tasks                       Lists available tasks"
   verbose "    run <task1> <task2>         Run task"
   verbose
   verbose "  options:"
@@ -185,9 +186,7 @@ task default {
   fi
 }
 
-function koshu_run () {
-  local tasklist=("${!1}")
-
+function koshu_bootstrap () {
   # ensure koshufile is located in the context of the current directory
   cd "$( pwd )"
   if [[ ! -f "$koshu_param_taskfile" ]]; then
@@ -210,6 +209,10 @@ function koshu_run () {
       koshu_available_tasks+=("$f")
     fi
   done
+}
+
+function koshu_run () {
+  local tasklist=("${!1}")
 
   for t in ${tasklist[@]}; do
     if [[ "$(koshu_array_contains $t ${koshu_available_tasks[@]})" = "true" ]]; then
@@ -225,7 +228,7 @@ function koshu_run () {
 declare -ar parser_arguments=("$@")
 declare -a parser_commands=()
 declare -a parser_options=()
-declare parser_index=0
+declare -i parser_index=0
 declare parser_argument
 declare parser_option
 declare parser_command
@@ -294,6 +297,10 @@ for parser_command in "${parser_commands[@]}"; do
       koshu_init
       koshu_exit 'Finished initializing koshu' 0
       ;;
+    "tasks" )
+      koshu_bootstrap
+      koshu_exit "Available tasks: $(koshu_array_print koshu_available_tasks[@])" 0
+      ;;
     "run" )
       koshu_param_tasklist=("${parser_commands[*]:1}")
       ;;
@@ -307,5 +314,6 @@ if [[ "${#koshu_param_tasklist[*]}" -lt 1 ]]; then
   koshu_param_tasklist=('default')
 fi
 
+koshu_bootstrap
 koshu_run koshu_param_tasklist[@]
 koshu_exit "Finished executing tasks ($(koshu_array_print koshu_executed_tasks[@] ' %s '))" 0

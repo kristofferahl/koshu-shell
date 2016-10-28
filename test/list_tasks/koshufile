@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+task first {
+  echo 'First'
+}
+
+task second {
+  echo 'Second'
+}
+
+task third {
+  echo 'Third'
+}
