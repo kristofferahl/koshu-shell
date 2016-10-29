@@ -17,7 +17,7 @@ shopt -s expand_aliases
 
 alias task="function"
 alias param="koshu_set_param"
-alias depends_on="koshu_depends_on"
+alias depends_on="koshu_exec_task"
 alias verbose="koshu_log_verbose"
 alias success="koshu_log_success"
 alias info="koshu_log_info"
@@ -138,24 +138,18 @@ function koshu_array_indexof () {
 
 function koshu_exec_task () {
   local task_name=${1}
-
-  info "Starting $task_name"
-  local start_time=`date +%s`
-
-  $task_name
-
-  local end_time=`date +%s`
-  success "Finished executing $task_name ( `expr $end_time - $start_time`s )"
-  cd $here
-
-  koshu_executed_tasks+=("$task_name")
-}
-
-function koshu_depends_on () {
-  local task_name=${1}
   local executed=$(koshu_array_contains $task_name ${koshu_executed_tasks[@]})
   if [[ $executed = false ]]; then
-    koshu_exec_task $task_name
+    info "Starting $task_name"
+    local start_time=`date +%s`
+
+    $task_name
+
+    local end_time=`date +%s`
+    success "Finished executing $task_name ( `expr $end_time - $start_time`s )"
+    cd $here
+
+    koshu_executed_tasks+=("$task_name")
   fi
 }
 
