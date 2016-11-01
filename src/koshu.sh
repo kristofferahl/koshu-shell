@@ -263,7 +263,7 @@ for parser_argument in "${parser_arguments[@]}"; do
       parser_commands+=("$parser_argument")
     fi
   fi
-  (( parser_index++ ))
+  (( parser_index+=1 ))
 done
 
 for parser_option in "${parser_options[@]}"; do
