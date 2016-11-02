@@ -316,31 +316,35 @@ for parser_option in "${parser_options[@]}"; do
   esac
 done
 
+declare parser_commands_continue=true
 for parser_command in "${parser_commands[@]}"; do
-  case "$parser_command" in
-    "help" )
-      koshu_help
-      koshu_exit '' 0
-      ;;
-    "version" )
-      koshu_version
-      koshu_exit '' 0
-      ;;
-    "init" )
-      koshu_init
-      koshu_exit 'Finished initializing koshu' 0
-      ;;
-    "tasks" )
-      koshu_bootstrap
-      koshu_exit "Available tasks: $(koshu_array_print koshu_available_tasks[@])" 0
-      ;;
-    "run" )
-      koshu_param_tasklist=("${parser_commands[*]:1}")
-      ;;
-    * ) # Unknown commands must map to task names
-      koshu_param_tasklist+=("$parser_command")
-      ;;
-  esac
+  if [[ $parser_commands_continue == true ]]; then
+    case "$parser_command" in
+      "help" )
+        koshu_help
+        koshu_exit '' 0
+        ;;
+      "version" )
+        koshu_version
+        koshu_exit '' 0
+        ;;
+      "init" )
+        koshu_init
+        koshu_exit 'Finished initializing koshu' 0
+        ;;
+      "tasks" )
+        koshu_bootstrap
+        koshu_exit "Available tasks: $(koshu_array_print koshu_available_tasks[@])" 0
+        ;;
+      "run" )
+        koshu_param_tasklist=("${parser_commands[*]:1}")
+        parser_commands_continue=false
+        ;;
+      * ) # Unknown commands must map to task names
+        koshu_param_tasklist+=("$parser_command")
+        ;;
+    esac
+  fi
 done
 
 if [[ "${#koshu_param_tasklist[*]}" -lt 1 ]]; then
