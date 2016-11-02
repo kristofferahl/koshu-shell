@@ -164,6 +164,14 @@ function koshu_set_here () {
   cd $here
 }
 
+function koshu_expand_path () {
+  { cd "$(dirname "$1")" 2>/dev/null
+    local dirname="$PWD"
+    cd "$OLDPWD"
+    echo "$dirname/$(basename "$1")"
+  } || echo "$1"
+}
+
 function koshu_set_param () {
   local value="$1"
   local param_name=(${value//=/ }[0])
@@ -212,6 +220,9 @@ function koshu_bootstrap () {
   if [[ ! -f "$koshu_param_taskfile" ]]; then
     koshu_exit "'$koshu_param_taskfile' is not a valid path for koshufile" 1
   fi
+
+  # expand path to koshufile
+  koshu_param_taskfile=$(koshu_expand_path "$koshu_param_taskfile")
 
   # ensure here is set properly before sourcing koshufile
   koshu_set_here
