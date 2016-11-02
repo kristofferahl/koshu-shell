@@ -33,6 +33,7 @@ declare -a koshu_available_tasks=()
 declare -a koshu_executed_tasks=()
 declare -a koshu_params=()
 declare -a koshu_envs=()
+declare here
 
 function koshu_version () {
   info "Koshu v. $koshu_version"
@@ -140,6 +141,9 @@ function koshu_exec_task () {
   local task_name=${1}
   local executed=$(koshu_array_contains $task_name ${koshu_executed_tasks[@]})
   if [[ $executed = false ]]; then
+    # ensure here is set properly before executing task
+    koshu_set_here
+
     info "Starting $task_name"
     local start_time=`date +%s`
 
@@ -147,10 +151,17 @@ function koshu_exec_task () {
 
     local end_time=`date +%s`
     success "Finished executing $task_name ( `expr $end_time - $start_time`s )"
-    cd $here
+
+    # ensure here is reset properly after executing task
+    koshu_set_here
 
     koshu_executed_tasks+=("$task_name")
   fi
+}
+
+function koshu_set_here () {
+  here="$( cd "$( dirname "$koshu_param_taskfile" )" && pwd )"
+  cd $here
 }
 
 function koshu_set_param () {
@@ -203,8 +214,7 @@ function koshu_bootstrap () {
   fi
 
   # ensure here is set properly before sourcing koshufile
-  declare -r here="$( cd "$( dirname "$koshu_param_taskfile" )" && pwd )"
-  cd $here
+  koshu_set_here
 
   # import koshufile
   chmod +xrw "./koshufile"

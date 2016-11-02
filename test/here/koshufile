@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+echo "sourced: $here"
+
+task default {
+  echo "task: $here"
+}
+
+task override {
+  here="./somewhere"
+  echo "override: $here"
+}
+
+task reset {
+  depends_on override
+  echo "reset: $here"
+}
