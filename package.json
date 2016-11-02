@@ -1,6 +1,6 @@
 {
   "name": "koshu",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "The honey flavoured task automation tool",
   "bin": {
     "koshu": "./src/koshu.sh"
