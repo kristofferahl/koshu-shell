@@ -26,7 +26,7 @@ alias error="koshu_log_error"
 
 # internals
 
-declare -r koshu_version='0.5.3'
+declare -r koshu_version='0.5.4'
 declare -r koshu_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 declare koshu_exiting=false
 declare -a koshu_available_tasks=()
