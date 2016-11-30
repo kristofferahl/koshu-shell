@@ -18,11 +18,12 @@ shopt -s expand_aliases
 alias task="function"
 alias param="koshu_set_param"
 alias depends_on="koshu_exec_task"
-alias verbose="koshu_log_verbose"
-alias success="koshu_log_success"
-alias info="koshu_log_info"
-alias warn="koshu_log_warn"
-alias error="koshu_log_error"
+alias verbose="koshu_log gray [koshu] "
+alias success="koshu_log green [koshu] "
+alias info="koshu_log blue [koshu] "
+alias warn="koshu_log yellow [koshu] "
+alias error="koshu_log red [koshu] "
+alias color="koshu_log"
 
 # internals
 
@@ -89,11 +90,11 @@ declare -r koshu_yellow="\033[0;93m"
 declare -r koshu_gray="\033[0;90m"
 declare -r koshu_reset="\033[0m"
 
-function koshu_log_verbose() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_gray}koshu: ${1}${koshu_reset}"; }
-function koshu_log_success() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_green}koshu: ${1}${koshu_reset}"; }
-function koshu_log_info() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_blue}koshu: ${1}${koshu_reset}"; }
-function koshu_log_warn() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_yellow}koshu: ${1}${koshu_reset}"; }
-function koshu_log_error() { [[ $koshu_param_silent = true ]] || echo -e "${koshu_reset}${koshu_red}koshu: ${1}${koshu_reset}"; }
+function koshu_log () {
+  [[ $koshu_param_silent = true ]] || {
+    koshu_log_color=koshu_${1}; echo -e "${koshu_reset}${!koshu_log_color}${@:2}${koshu_reset}";
+  }
+}
 
 function koshu_exit () {
   local exitcode=${2:-$?}
