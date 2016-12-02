@@ -14,7 +14,13 @@ The honey flavoured task automation tool
 
 Simply download koshu.sh to your project directory and execute koshu by typing `./koshu.sh`.
 
+#### Pre-release
+
     curl https://raw.githubusercontent.com/kristofferahl/koshu-shell/master/src/koshu.sh > ./koshu.sh
+
+#### Stable
+
+    curl https://raw.githubusercontent.com/kristofferahl/koshu-shell/0.5.4/src/koshu.sh > ./koshu.sh
 
 To make running your "project local" koshu easier, you add an alias for koshu.sh to your shell.
 
