@@ -2,6 +2,10 @@ machine:
   services:
     - docker
 
+dependencies:
+  override:
+    - git clone https://github.com/sstephenson/bats.git
+
 test:
   override:
-    - ./src/koshu.sh test:docker --file ./koshufile
+    - ./src/koshu.sh test --file ./koshufile
