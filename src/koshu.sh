@@ -83,16 +83,22 @@ function koshu_help () {
   verbose
 }
 
+# shellcheck disable=SC2034
 declare -r koshu_blue="\033[1;94m"
+# shellcheck disable=SC2034
 declare -r koshu_green="\033[1;92m"
+# shellcheck disable=SC2034
 declare -r koshu_red="\033[0;91m"
+# shellcheck disable=SC2034
 declare -r koshu_yellow="\033[0;93m"
+# shellcheck disable=SC2034
 declare -r koshu_gray="\033[0;90m"
+# shellcheck disable=SC2034
 declare -r koshu_reset="\033[0m"
 
 function koshu_log () {
   [[ $koshu_param_silent = true ]] || {
-    koshu_log_color=koshu_${1}; echo -e "${koshu_reset}${!koshu_log_color}${@:2}${koshu_reset}";
+    koshu_log_color=koshu_${1}; echo -e "${koshu_reset}${!koshu_log_color}${*:2}${koshu_reset}";
   }
 }
 

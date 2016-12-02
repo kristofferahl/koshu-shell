@@ -29,3 +29,14 @@
 
   [[ "$output" == *"error"* ]]
 }
+
+@test "prints colored messages" {
+  run "$KOSHU_SOURCE_DIR/koshu.sh" color --file "$BATS_TEST_DIRNAME/koshufile"
+
+  [[ "$output" == *"red"* ]]
+  [[ "$output" == *"green"* ]]
+  [[ "$output" == *"blue"* ]]
+  [[ "$output" == *"yellow"* ]]
+  [[ "$output" == *"gray"* ]]
+  [[ "$output" == *"and bar"* ]]
+}
