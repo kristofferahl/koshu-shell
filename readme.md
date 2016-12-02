@@ -3,6 +3,7 @@
 [![NPM version](https://badge.fury.io/js/koshu.png)](http://badge.fury.io/js/koshu)
 [![Join the chat at https://gitter.im/kristofferahl/koshu-shell](https://badges.gitter.im/kristofferahl/koshu-shell.svg)](https://gitter.im/kristofferahl/koshu-shell?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1e82f698d11a4a2bb858ade94318ed73)](https://www.codacy.com/app/mail_54/koshu-shell?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kristofferahl/koshu-shell&amp;utm_campaign=Badge_Grade)
+[![CircleCI](https://circleci.com/gh/kristofferahl/koshu-shell/tree/master.svg?style=svg)](https://circleci.com/gh/kristofferahl/koshu-shell/tree/master)
 
 The honey flavoured task automation tool
 
