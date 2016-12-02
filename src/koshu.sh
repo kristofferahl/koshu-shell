@@ -152,7 +152,7 @@ function koshu_exec_task () {
     $task_name
 
     end_time="$(date +%s)"
-    success "Finished executing $task_name ( $(($end_time - $start_time))s )"
+    success "Finished executing $task_name ( $((end_time - start_time))s )"
 
     # ensure here is reset properly after executing task
     koshu_set_here
