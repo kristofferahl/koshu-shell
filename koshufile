@@ -4,6 +4,8 @@
 sourceDir="${here:?}/src"
 testDir="${here:?}/test"
 
+param debug=true
+
 export KOSHU_SOURCE_DIR=$sourceDir
 
 task test {
@@ -32,7 +34,7 @@ task test:docker {
     echo && echo "Testing in bash $v"
     docker run --rm -v "$bats_dir" -v "$current_dir" "bash:$v" bash /koshu-shell/test/docker-run-test.sh
 
-    if [[ $? != 0 ]]; then
+    if [[ $? != 0 ]] && [[ $debug == true ]]; then
       docker run --rm -it -v "$bats_dir" -v "$current_dir" "bash:$v" bash
     fi
   done

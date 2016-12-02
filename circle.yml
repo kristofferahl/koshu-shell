@@ -4,8 +4,8 @@ machine:
 
 dependencies:
   override:
-    - git clone https://github.com/sstephenson/bats.git
+    - cd .. && git clone https://github.com/sstephenson/bats.git
 
 test:
   override:
-    - ./src/koshu.sh test --file ./koshufile
+    - ./src/koshu.sh test:docker --file ./koshufile --param debug=false
