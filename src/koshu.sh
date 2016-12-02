@@ -27,7 +27,6 @@ alias error="koshu_log_error"
 # internals
 
 declare -r koshu_version='0.5.4'
-declare -r koshu_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 declare koshu_exiting=false
 declare -a koshu_available_tasks=()
 declare -a koshu_executed_tasks=()
@@ -129,27 +128,23 @@ function koshu_array_contains () {
   echo $r
 }
 
-function koshu_array_indexof () {
-  local arr=$2
-  local e
-  local r=-1
-  for i in "${!arr[@]}"; do [[ "${arr[$i]}" == "$1" ]] && r=$i; done
-  echo $r
-}
-
 function koshu_exec_task () {
   local task_name=${1}
-  local executed=$(koshu_array_contains $task_name ${koshu_executed_tasks[@]})
+  local executed
+  local start_time
+  local end_time
+
+  executed=$(koshu_array_contains "$task_name" "${koshu_executed_tasks[@]}")
   if [[ $executed = false ]]; then
     # ensure here is set properly before executing task
     koshu_set_here
 
     info "Starting $task_name"
-    local start_time=`date +%s`
+    start_time=`date +%s`
 
     $task_name
 
-    local end_time=`date +%s`
+    end_time=`date +%s`
     success "Finished executing $task_name ( `expr $end_time - $start_time`s )"
 
     # ensure here is reset properly after executing task
@@ -174,11 +169,11 @@ function koshu_expand_path () {
 
 function koshu_set_param () {
   local value="$1"
-  local param_name=(${value//=/ }[0])
+  local param_name="${value%=*}"
   local param_value="${value#*=}"
 
   if [ "$param_name" != "" ] && [ "$param_name" != "$param_value[0]" ]; then
-    if [ "$(koshu_array_contains $param_name ${koshu_params[@]})" != "true" ]; then
+    if [ "$(koshu_array_contains "$param_name" "${koshu_params[@]}")" != "true" ]; then
       printf -v "${param_name}" '%s' "${param_value}"
       koshu_params+=("$param_name")
     fi
@@ -187,11 +182,11 @@ function koshu_set_param () {
 
 function koshu_set_env () {
   local value="$1"
-  local env_name=(${value//=/ }[0])
+  local env_name="${value%=*}"
   local env_value="${value#*=}"
 
   if [ "$env_name" != "" ] && [ "$env_name" != "$env_value[0]" ]; then
-    if [ "$(koshu_array_contains $env_name ${koshu_envs[@]})" != "true" ]; then
+    if [ "$(koshu_array_contains "$env_name" "${koshu_envs[@]}")" != "true" ]; then
       eval "export $env_name'=${env_value}'"
       koshu_envs+=("$env_name")
     fi
@@ -234,7 +229,7 @@ function koshu_bootstrap () {
   # variable must be set after importing koshufile
   koshu_functions=($(declare -F | sed 's/declare -f //g'))
 
-  for f in ${koshu_functions[@]}; do
+  for f in "${koshu_functions[@]}"; do
     if [[ $f != koshu_* ]]; then
       koshu_available_tasks+=("$f")
     fi
@@ -244,8 +239,8 @@ function koshu_bootstrap () {
 function koshu_run () {
   local tasklist=("${!1}")
 
-  for t in ${tasklist[@]}; do
-    if [[ "$(koshu_array_contains $t ${koshu_available_tasks[@]})" = "true" ]]; then
+  for t in "${tasklist[@]}"; do
+    if [[ "$(koshu_array_contains "$t" "${koshu_available_tasks[@]}")" = "true" ]]; then
       koshu_exec_task $t
     else
       koshu_usage
@@ -288,11 +283,11 @@ for parser_argument in "${parser_arguments[@]}"; do
 done
 
 for parser_option in "${parser_options[@]}"; do
-  if [[ "$parser_option" =~ '^([^=]+)=(.*)$' ]]; then
+  if [[ "$parser_option" =~ ^([^=]+)=(.*)$ ]]; then
     parser_key="${BASH_REMATCH[1]}"
     parser_value="${BASH_REMATCH[2]}"
   else
-    parser_key=(${parser_option//=/ }[0])
+    parser_key=$(${parser_option//=/ }[0])
     parser_value=${parser_option#*=}
   fi
 
@@ -337,7 +332,7 @@ for parser_command in "${parser_commands[@]}"; do
         koshu_exit "Available tasks: $(koshu_array_print koshu_available_tasks[@])" 0
         ;;
       "run" )
-        koshu_param_tasklist=("${parser_commands[*]:1}")
+        koshu_param_tasklist=("${parser_commands[@]:1}")
         parser_commands_continue=false
         ;;
       * ) # Unknown commands must map to task names

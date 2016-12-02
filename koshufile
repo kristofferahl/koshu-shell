@@ -1,26 +1,47 @@
 #!/usr/bin/env bash
-
 # Dogfooding... Using koshu to bake koshu.
 
-sourceDir="$here/src"
-testDir="$here/test"
+sourceDir="${here:?}/src"
+testDir="${here:?}/test"
 
 export KOSHU_SOURCE_DIR=$sourceDir
 
 task test {
-  tests=()
+  declare -a tests=()
   while read x; do
-    verbose "Adding test '$x' to testrun"
-    tests+=("$testDir/$x/test.bats")
+    if [[ -d "$testDir/$x" ]]; then
+      verbose "Adding '$x' tests to testrun ($testDir/$x/test.bats)"
+      tests+=("$testDir/$x/test.bats")
+    fi
   done <<<"$(ls $testDir)"
-
   bats -p ${tests[*]}
 }
 
+task test:docker {
+  declare -a versions=('3.2.57' '4.0.44' '4.3.48')
+  declare -a skipping=('3.0.22' '4.4.0')
+  declare bats_dir
+  declare current_dir
+
+  for v in "${skipping[@]}"; do echo "Skipping bash $v"; done
+
+  for v in "${versions[@]}"; do
+    bats_dir="${here:?}/../bats:/bats"
+    current_dir="${here:?}:/koshu-shell"
+
+    echo && echo "Testing in bash $v"
+    docker run --rm -v "$bats_dir" -v "$current_dir" "bash:$v" bash /koshu-shell/test/docker-run-test.sh
+
+    if [[ $? != 0 ]]; then
+      docker run --rm -it -v "$bats_dir" -v "$current_dir" "bash:$v" bash
+    fi
+  done
+}
+
 task install {
-  sudo npm install -g
+  sudo npm 'install' -g
 }
 
 task uninstall {
-  sudo npm uninstall -g
+  sudo npm 'uninstall' -g
 }
