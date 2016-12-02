@@ -7,3 +7,12 @@ task default {
   warn 'warn'
   error 'error'
 }
+
+task color {
+  color red 'red'
+  color blue 'blue'
+  color green 'green'
+  color yellow 'yellow'
+  color gray 'gray'
+  color gray foo and bar
+}
