@@ -27,7 +27,7 @@ alias color="koshu_log"
 
 # internals
 
-declare -r koshu_version='0.5.4'
+declare -r koshu_version='0.6.0'
 declare koshu_exiting=false
 declare -a koshu_available_tasks=()
 declare -a koshu_executed_tasks=()
