@@ -230,8 +230,8 @@ function koshu_bootstrap () {
   koshu_set_here
 
   # import koshufile
-  chmod +xrw "./koshufile"
-  . "./koshufile" --source-only
+  chmod +xrw "$koshu_param_taskfile"
+  . "$koshu_param_taskfile" --source-only
 
   # variable must be set after importing koshufile
   koshu_functions=($(declare -F | sed 's/declare -f //g'))
