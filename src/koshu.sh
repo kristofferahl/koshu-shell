@@ -39,7 +39,7 @@ declare -a koshu_envs=()
 declare here
 
 function koshu_print_version () {
-  koshu_log default "Koshu v.$koshu_version"
+  koshu_log default "Koshu $koshu_version"
 }
 
 function koshu_print_logo () {
@@ -55,7 +55,7 @@ Koshu - The honey flavoured task automation tool
 }
 
 function koshu_print_usage () {
-  log_info "Koshu v. $koshu_version"
+  log_info "Koshu $koshu_version"
   log_info "Usage: ./koshu.sh [<command|task>] [--<option>]"
 }
 
