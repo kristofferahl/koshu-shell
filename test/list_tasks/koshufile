@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+_private () {
+  echo 'Private'
+}
+
 task first {
   echo 'First'
 }
