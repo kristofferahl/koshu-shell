@@ -12,7 +12,7 @@ task test {
   declare -a tests=()
   while read x; do
     if [[ -d "$testDir/$x" ]]; then
-      verbose "Adding '$x' tests to testrun ($testDir/$x/test.bats)"
+      log "Adding '$x' tests to testrun ($testDir/$x/test.bats)"
       tests+=("$testDir/$x/test.bats")
     fi
   done <<<"$(ls $testDir)"

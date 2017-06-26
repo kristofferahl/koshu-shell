@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
 task default {
-  verbose 'verbose'
-  success 'success'
-  info 'info'
-  warn 'warn'
-  error 'error'
+  log 'log_default'
+  log_verbose 'verbose'
+  log_success 'success'
+  log_info 'info'
+  log_warn 'warn'
+  log_error 'error'
 }
 
 task color {
+  color default 'color_default'
   color red 'red'
   color blue 'blue'
   color green 'green'

@@ -18,12 +18,15 @@ shopt -s expand_aliases
 alias task="function"
 alias param="koshu_set_param"
 alias depends_on="koshu_exec_task"
-alias verbose="koshu_log gray [koshu] "
-alias success="koshu_log green [koshu] "
-alias info="koshu_log blue [koshu] "
-alias warn="koshu_log yellow [koshu] "
-alias error="koshu_log red [koshu] "
 alias color="koshu_log"
+alias log="koshu_log default [koshu] "
+alias log_verbose="koshu_log gray [koshu] "
+alias log_success="koshu_log green [koshu] "
+alias log_info="koshu_log blue [koshu] "
+alias log_warn="koshu_log yellow [koshu] "
+alias log_error="koshu_log red [koshu] "
+
+
 
 # internals
 
@@ -52,35 +55,35 @@ Koshu - The honey flavoured task automation tool
 }
 
 function koshu_print_usage () {
-  info "Koshu v. $koshu_version"
-  info "Usage: ./koshu.sh [<command|task>] [--<option>]"
+  log_info "Koshu v. $koshu_version"
+  log_info "Usage: ./koshu.sh [<command|task>] [--<option>]"
 }
 
 function koshu_print_help () {
   koshu_print_logo
   koshu_print_usage
-  verbose
-  verbose "  The first argument must be a <command> or a <task> where"
-  verbose "  the value is the name of a task you wish to execute"
-  verbose "  or the name of a koshu command."
-  verbose
-  verbose "  commands:"
-  verbose "    init                        Initialized koshu"
-  verbose "    help                        Displays this help message"
-  verbose "    version                     Displays the version number"
-  verbose "    tasks                       Lists available tasks"
-  verbose "    run <task1> <task2>         Run task"
-  verbose
-  verbose "  options:"
-  verbose "    -s, --silent                Suppress output from koshu"
-  verbose "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
-  verbose "    -p <name=value>, --param <name=value>    Sets variable before tasks are executed"
-  verbose "    -e <name=value>, --env <name=value>    Sets environment variable before tasks are executed"
-  verbose
-  verbose "  examples:"
-  verbose "    ./koshu.sh compile"
-  verbose "    ./koshu.sh test:all --file ./path/to/koshufile"
-  verbose
+  log_verbose
+  log_verbose "  The first argument must be a <command> or a <task> where"
+  log_verbose "  the value is the name of a task you wish to execute"
+  log_verbose "  or the name of a koshu command."
+  log_verbose
+  log_verbose "  commands:"
+  log_verbose "    init                        Initialized koshu"
+  log_verbose "    help                        Displays this help message"
+  log_verbose "    version                     Displays the version number"
+  log_verbose "    tasks                       Lists available tasks"
+  log_verbose "    run <task1> <task2>         Run task"
+  log_verbose
+  log_verbose "  options:"
+  log_verbose "    -s, --silent                Suppress output from koshu"
+  log_verbose "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
+  log_verbose "    -p <name=value>, --param <name=value>    Sets variable before tasks are executed"
+  log_verbose "    -e <name=value>, --env <name=value>    Sets environment variable before tasks are executed"
+  log_verbose
+  log_verbose "  examples:"
+  log_verbose "    ./koshu.sh compile"
+  log_verbose "    ./koshu.sh test:all --file ./path/to/koshufile"
+  log_verbose
 }
 
 # shellcheck disable=SC2034
@@ -112,11 +115,11 @@ function koshu_exit () {
 
     if [[ $exitcode = 0 ]]; then
       if [[ "$msg" != "" ]]; then
-        success "$msg"
+        log_success "$msg"
       fi
     else
-      error "${msg:-An unhandled error occured.}"
-      error "Exit code: $exitcode"
+      log_error "${msg:-An unhandled error occured.}"
+      log_error "Exit code: $exitcode"
     fi
   fi
 
@@ -148,13 +151,13 @@ function koshu_exec_task () {
     # ensure here is set properly before executing task
     koshu_set_here
 
-    info "Starting $task_name"
+    log_info "Starting $task_name"
     start_time="$(date +%s)"
 
     $task_name
 
     end_time="$(date +%s)"
-    success "Finished executing $task_name ( $((end_time - start_time))s )"
+    log_success "Finished executing $task_name ( $((end_time - start_time))s )"
 
     # ensure here is reset properly after executing task
     koshu_set_here
@@ -203,9 +206,9 @@ function koshu_set_env () {
 }
 
 function koshu_init () {
-  verbose 'Initializing koshu'
+  log_verbose 'Initializing koshu'
   if [[ ! -f "$koshu_param_taskfile" ]]; then
-    verbose "Creating koshufile ($koshu_param_taskfile)"
+    log_verbose "Creating koshufile ($koshu_param_taskfile)"
 
     echo "#!/usr/bin/env bash
 
@@ -214,7 +217,7 @@ task default {
 }
 " > "$koshu_param_taskfile"
   else
-    verbose "Koshufile already exists ($koshu_param_taskfile)"
+    log_verbose "Koshufile already exists ($koshu_param_taskfile)"
   fi
 }
 
@@ -255,7 +258,7 @@ function koshu_run () {
       koshu_exec_task $t
     else
       koshu_print_usage
-      info "Run \"koshu help\" for more info."
+      log_info "Run \"koshu help\" for more info."
       koshu_exit "Task '$t' is not defined. Available tasks: $(koshu_array_print koshu_available_tasks[@])" 1
     fi
   done

@@ -3,6 +3,12 @@
 @test "logs verbose level message" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
 
+  [[ "$output" == *"log_default"* ]]
+}
+
+@test "logs verbose level message" {
+  run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
+
   [[ "$output" == *"verbose"* ]]
 }
 
@@ -33,6 +39,7 @@
 @test "prints colored messages" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" color --file "$BATS_TEST_DIRNAME/koshufile"
 
+  [[ "$output" == *"color_default"* ]]
   [[ "$output" == *"red"* ]]
   [[ "$output" == *"green"* ]]
   [[ "$output" == *"blue"* ]]
