@@ -35,30 +35,30 @@ declare -a koshu_params=()
 declare -a koshu_envs=()
 declare here
 
-function koshu_version () {
-  info "Koshu v. $koshu_version"
+function koshu_print_version () {
+  koshu_log default "Koshu v.$koshu_version"
 }
 
-function koshu_logo () {
-  echo -e "${koshu_reset}${koshu_blue} _  __         _
+function koshu_print_logo () {
+  koshu_log blue "${koshu_color_reset}${koshu_color_blue} _  __         _
 | |/ /___  ___| |__  _   _
 | ' // _ \/ __| '_ \| | | |
 | . \ (_) \__ \ | | | |_| |
 |_|\_\___/|___/_| |_|\__,_|
 ======================================================
 Koshu - The honey flavoured task automation tool
-======================================================${koshu_reset}
+======================================================${koshu_color_reset}
 "
 }
 
-function koshu_usage () {
-  koshu_version
+function koshu_print_usage () {
+  info "Koshu v. $koshu_version"
   info "Usage: ./koshu.sh [<command|task>] [--<option>]"
 }
 
-function koshu_help () {
-  koshu_logo
-  koshu_usage
+function koshu_print_help () {
+  koshu_print_logo
+  koshu_print_usage
   verbose
   verbose "  The first argument must be a <command> or a <task> where"
   verbose "  the value is the name of a task you wish to execute"
@@ -84,21 +84,23 @@ function koshu_help () {
 }
 
 # shellcheck disable=SC2034
-declare -r koshu_blue="\033[1;94m"
+declare -r koshu_color_default=''
 # shellcheck disable=SC2034
-declare -r koshu_green="\033[1;92m"
+declare -r koshu_color_blue="\033[1;94m"
 # shellcheck disable=SC2034
-declare -r koshu_red="\033[0;91m"
+declare -r koshu_color_green="\033[1;92m"
 # shellcheck disable=SC2034
-declare -r koshu_yellow="\033[0;93m"
+declare -r koshu_color_red="\033[0;91m"
 # shellcheck disable=SC2034
-declare -r koshu_gray="\033[0;90m"
+declare -r koshu_color_yellow="\033[0;93m"
 # shellcheck disable=SC2034
-declare -r koshu_reset="\033[0m"
+declare -r koshu_color_gray="\033[0;90m"
+# shellcheck disable=SC2034
+declare -r koshu_color_reset="\033[0m"
 
 function koshu_log () {
   [[ $koshu_param_silent = true ]] || {
-    koshu_log_color=koshu_${1}; echo -e "${koshu_reset}${!koshu_log_color}${*:2}${koshu_reset}";
+    koshu_log_color=koshu_color_${1}; echo -e "${koshu_color_reset}${!koshu_log_color}${*:2}${koshu_color_reset}";
   }
 }
 
@@ -252,7 +254,7 @@ function koshu_run () {
     if [[ "$(koshu_array_contains "$t" "${koshu_available_tasks[@]}")" = "true" ]]; then
       koshu_exec_task $t
     else
-      koshu_usage
+      koshu_print_usage
       info "Run \"koshu help\" for more info."
       koshu_exit "Task '$t' is not defined. Available tasks: $(koshu_array_print koshu_available_tasks[@])" 1
     fi
@@ -314,7 +316,7 @@ for parser_option in "${parser_options[@]}"; do
       koshu_param_silent=true
       ;;
     * )
-      koshu_usage >&2
+      koshu_print_usage >&2
       koshu_exit "Invalid option '$parser_key'" 1
       ;;
   esac
@@ -325,11 +327,11 @@ for parser_command in "${parser_commands[@]}"; do
   if [[ $parser_commands_continue == true ]]; then
     case "$parser_command" in
       "help" )
-        koshu_help
+        koshu_print_help
         koshu_exit '' 0
         ;;
       "version" )
-        koshu_version
+        koshu_print_version
         koshu_exit '' 0
         ;;
       "init" )
