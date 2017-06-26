@@ -41,11 +41,19 @@ Run koshu init to create a "koshufile" in the current directory.
 
 ### Tasks
 
-Use the following syntax in your koshufile to define a task.
+A task can be defined in two ways:
 
     task setup {
       echo 'Setting up...'
     }
+
+or
+
+    setup () {
+      echo 'Setting up...'
+    }
+
+The latter is compatible with shellcheck while the first one is not.
 
 You may also define a "default" task that is executed if no task name is passed to koshu.
 
