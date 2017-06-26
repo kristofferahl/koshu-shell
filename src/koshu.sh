@@ -239,7 +239,7 @@ function koshu_bootstrap () {
   koshu_functions=($(declare -F | sed 's/declare -f //g'))
 
   for f in "${koshu_functions[@]}"; do
-    if [[ $f != koshu_* ]]; then
+    if [[ $f != koshu_* ]] && [[ $f != _* ]]; then
       koshu_available_tasks+=("$f")
     fi
   done
