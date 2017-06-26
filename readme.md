@@ -23,7 +23,7 @@ Simply download koshu.sh to your project directory and execute koshu by typing `
 
 #### Stable
 
-    curl https://raw.githubusercontent.com/kristofferahl/koshu-shell/0.5.4/src/koshu.sh > ./koshu.sh
+    curl https://raw.githubusercontent.com/kristofferahl/koshu-shell/v0.6.2/src/koshu.sh > ./koshu.sh
 
 To make running your "project local" koshu easier, you add an alias for koshu.sh to your shell.
 
