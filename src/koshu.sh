@@ -231,7 +231,9 @@ function koshu_bootstrap () {
 
   # import koshufile
   chmod +xrw "$koshu_param_taskfile"
-  . "$koshu_param_taskfile" --source-only
+
+  # shellcheck source=/dev/null
+  source "$koshu_param_taskfile" --source-only
 
   # variable must be set after importing koshufile
   koshu_functions=($(declare -F | sed 's/declare -f //g'))
