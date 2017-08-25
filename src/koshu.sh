@@ -362,4 +362,4 @@ fi
 
 koshu_bootstrap
 koshu_run koshu_param_tasklist[@]
-koshu_exit "Finished executing tasks ($(koshu_array_print koshu_executed_tasks[@] ' %s '))" 0
+koshu_exit "Finished executing ($(koshu_array_print koshu_executed_tasks[@] ' %s '))" 0
