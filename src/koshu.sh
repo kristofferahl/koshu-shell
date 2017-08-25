@@ -16,7 +16,6 @@ declare koshu_param_silent=false
 shopt -s expand_aliases
 
 alias task="function"
-alias param="koshu_set_param"
 alias depends_on="koshu_exec_task"
 alias color="koshu_log"
 alias log="koshu_log default [koshu] "
@@ -34,6 +33,8 @@ declare -r koshu_version='0.6.2'
 declare koshu_exiting=false
 declare -a koshu_available_tasks=()
 declare -a koshu_executed_tasks=()
+declare -a koshu_arg_params=()
+declare -a koshu_arg_envs=()
 declare -a koshu_params=()
 declare -a koshu_envs=()
 declare here
@@ -240,6 +241,16 @@ function koshu_bootstrap () {
   # shellcheck source=/dev/null
   source "$koshu_param_taskfile" --source-only
 
+  # set variables from args
+  for p in "${koshu_arg_params[@]}"; do
+    koshu_set_param "$p"
+  done
+
+  # set environment variables from args
+  for e in "${koshu_arg_envs[@]}"; do
+    koshu_set_env "$e"
+  done
+
   # variable must be set after importing koshufile
   koshu_functions=($(declare -F | sed 's/declare -f //g'))
 
@@ -310,10 +321,10 @@ for parser_option in "${parser_options[@]}"; do
       koshu_param_taskfile="$parser_value"
       ;;
     "p" | "param" )
-      koshu_set_param "$parser_value"
+      koshu_arg_params+=("$parser_value")
       ;;
     "e" | "env" )
-      koshu_set_env "$parser_value"
+      koshu_arg_envs+=("$parser_value")
       ;;
     "s" | "silent" )
       koshu_param_silent=true

@@ -4,7 +4,7 @@
 sourceDir="${here:?}/src"
 testDir="${here:?}/test"
 
-param debug=true
+debug=true
 
 export KOSHU_SOURCE_DIR=$sourceDir
 

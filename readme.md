@@ -83,9 +83,9 @@ Parameters you want set as variables can be passed to koshu by providing the `-p
 
     ./koshu.sh <taskname> --param foo=bar
 
-Default values can be set in your koshufile using the `param` function.
+Default values can be set in your koshufile using variables declaration.
 
-    param foo='default value'
+    foo='default value'
 
     task default {
       echo "$foo"
