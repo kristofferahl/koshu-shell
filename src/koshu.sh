@@ -35,8 +35,6 @@ declare -a koshu_available_tasks=()
 declare -a koshu_executed_tasks=()
 declare -a koshu_arg_params=()
 declare -a koshu_arg_envs=()
-declare -a koshu_params=()
-declare -a koshu_envs=()
 declare here
 
 function koshu_print_version () {
@@ -186,10 +184,8 @@ function koshu_set_param () {
   local param_value="${value#*=}"
 
   if [ "$param_name" != "" ] && [ "$param_name" != "$param_value[0]" ]; then
-    if [ "$(koshu_array_contains "$param_name" "${koshu_params[@]}")" != "true" ]; then
-      printf -v "${param_name}" '%s' "${param_value}"
-      koshu_params+=("$param_name")
-    fi
+    printf -v "${param_name}" '%s' "${param_value}"
+    koshu_params+=("$param_name")
   fi
 }
 
@@ -199,10 +195,7 @@ function koshu_set_env () {
   local env_value="${value#*=}"
 
   if [ "$env_name" != "" ] && [ "$env_name" != "$env_value[0]" ]; then
-    if [ "$(koshu_array_contains "$env_name" "${koshu_envs[@]}")" != "true" ]; then
-      eval "export $env_name'=${env_value}'"
-      koshu_envs+=("$env_name")
-    fi
+    eval "export $env_name'=${env_value}'"
   fi
 }
 

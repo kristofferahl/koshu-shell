@@ -28,9 +28,9 @@
   [ "$output" == "a.b.c." ]
 }
 
-@test "does not override parameters already set" {
+@test "overrides parameters already set" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --silent --file "$BATS_TEST_DIRNAME/koshufile" -p p1=a -p p1=b
 
   [ $status -eq 0 ]
-  [ "$output" == "a.default value.default value." ]
+  [ "$output" == "b.default value.default value." ]
 }

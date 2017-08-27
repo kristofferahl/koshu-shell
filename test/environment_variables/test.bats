@@ -33,9 +33,9 @@
   [  $(expr "${lines[1]}" : "TEST_ENV_2=b") -ne 0 ]
 }
 
-@test "does not override environment variables already set" {
+@test "overrides environment variables already set" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --silent --file "$BATS_TEST_DIRNAME/koshufile" -e TEST_ENV_1=a --env TEST_ENV_1=b
 
   [ $status -eq 0 ]
-  [  $(expr "${lines[0]}" : "TEST_ENV_1=a") -ne 0 ]
+  [  $(expr "${lines[0]}" : "TEST_ENV_1=b") -ne 0 ]
 }
