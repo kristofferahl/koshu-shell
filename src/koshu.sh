@@ -31,7 +31,7 @@ alias log_error="koshu_log red [koshu] "
 
 # internals
 
-declare -r koshu_version='0.6.2'
+declare -r koshu_version='0.7.0'
 declare koshu_exiting=false
 declare -a koshu_available_tasks=()
 declare -a koshu_executed_tasks=()
