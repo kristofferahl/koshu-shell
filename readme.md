@@ -63,7 +63,7 @@ You may also define a "default" task that is executed if no task name is passed 
 
 ### Dependencies
 
-You can define dependencies between your tasks by using the depends_on keyword followed by the name of the task you wish to depend upon.
+You can define dependencies between your tasks by using the `depends_on` keyword followed by the name of the task you wish to depend upon.
 
     task test {
       depends_on compile
@@ -75,9 +75,9 @@ In the example above, the compile task will be executed before any code placed a
 
     ./koshu.sh <taskname>
 
-## Parameters and environment variables
+## Parameters
 
-### Parameters
+### Variables
 
 Parameters you want set as variables can be passed to koshu by providing the `-p` or `--param` option followed by a name/value pair.
 
@@ -98,6 +98,27 @@ Parameters you want set as environment variables can be passed to koshu by provi
     ./koshu.sh <taskname> --env FOO=bar
 
 Default values are currently not supported for the `-e` or `--env` option.
+
+### Whitelisting parameters
+
+It is now possible to whitelist the parameters of each task. If whitelisting is not used, all parameters will be accpeted for all tasks.
+
+### Global whitelisting
+
+The parameters specified using the `global_params` keyword will be accepted by all tasks.
+
+    global_params <variablename> [<variablename> ...]
+
+### Task Whitelisting
+
+    params <taskname> <variablename> [<variablename> ...]
+
+Here's an example:
+
+    params build service
+    task build {
+      echo "Building service '$service'"
+    }
 
 ### NOTE: Spaces
 

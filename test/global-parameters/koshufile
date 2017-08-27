@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+p1='default value'
+p2='default value'
+p3='default value'
+
+global_params p1 p2
+
+task global_only {
+  echo "$p1.$p2.$p3."
+}
+
+params global_and_specific p3
+task global_and_specific {
+  echo "$p1.$p2.$p3."
+}
+
+params specific_only p4
+task specific_only {
+  echo "$p1.$p2.$p3.$p4."
+}
