@@ -192,7 +192,7 @@ function koshu_expand_path () {
 function koshu_allow_global_param () {
   local arr=(${@})
   for p in "${arr[@]}"; do
-    koshu_allowed_params+=("koshu_global_param:$p")
+    koshu_allowed_params+=("koshu_global_param#$p")
   done
 }
 
@@ -200,7 +200,7 @@ function koshu_allow_param () {
   local task_name="$1"
   local arr=(${@:2})
   for p in "${arr[@]}"; do
-    koshu_allowed_params+=("$task_name:$p")
+    koshu_allowed_params+=("$task_name#$p")
   done
 }
 
@@ -286,7 +286,7 @@ function koshu_run () {
       for p in "${koshu_arg_params[@]}"; do
         local param_name="${p%=*}"
         param_old_values+=("$param_name=${!param_name}")
-        if [[ "$(koshu_array_contains "koshu_global_param:$param_name" "${koshu_allowed_params[@]}")" = "true" ]] ||[[ "$(koshu_array_contains "$t:$param_name" "${koshu_allowed_params[@]}")" = "true" ]] || [[ ${#koshu_allowed_params[@]} -eq 0 ]]; then
+        if [[ "$(koshu_array_contains "koshu_global_param#$param_name" "${koshu_allowed_params[@]}")" = "true" ]] ||[[ "$(koshu_array_contains "$t#$param_name" "${koshu_allowed_params[@]}")" = "true" ]] || [[ ${#koshu_allowed_params[@]} -eq 0 ]]; then
           koshu_set_param "$p"
         fi
       done
