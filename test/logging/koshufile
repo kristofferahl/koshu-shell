@@ -2,11 +2,11 @@
 
 task default {
   log 'log_default'
-  log_verbose 'verbose'
-  log_success 'success'
-  log_info 'info'
-  log_warn 'warn'
-  log_error 'error'
+  log_verbose 'log_verbose'
+  log_success 'log_success'
+  log_info 'log_info'
+  log_warn 'log_warn'
+  log_error 'log_error'
 }
 
 task color {

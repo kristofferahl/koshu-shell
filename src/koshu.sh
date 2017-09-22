@@ -10,22 +10,23 @@ trap koshu_exit INT TERM EXIT
 declare -a koshu_param_tasklist=()
 declare koshu_param_taskfile='./koshufile'
 declare koshu_param_silent=false
+declare koshu_param_verbose=false
 
 # koshufile aliases
 
 shopt -s expand_aliases
 
-alias task="function"
-alias depends_on="koshu_exec_task"
-alias global_params="koshu_allow_global_param"
-alias params="koshu_allow_param"
-alias color="koshu_log"
-alias log="koshu_log default [koshu] "
-alias log_verbose="koshu_log gray [koshu] "
-alias log_success="koshu_log green [koshu] "
-alias log_info="koshu_log blue [koshu] "
-alias log_warn="koshu_log yellow [koshu] "
-alias log_error="koshu_log red [koshu] "
+alias task='function'
+alias depends_on='koshu_exec_task'
+alias global_params='koshu_allow_global_param'
+alias params='koshu_allow_param'
+alias color='koshu_log'
+alias log='koshu_log default [koshu] '
+alias log_verbose='koshu_log_verbose [koshu] '
+alias log_success='koshu_log green [koshu] '
+alias log_info='koshu_log blue [koshu] '
+alias log_warn='koshu_log yellow [koshu] '
+alias log_error='koshu_log red [koshu] '
 
 
 
@@ -78,6 +79,7 @@ function koshu_print_help () {
   log_verbose
   log_verbose "  options:"
   log_verbose "    -s, --silent                Suppress output from koshu"
+  log_verbose "    -v, --verbose               Show verbose output from koshu"
   log_verbose "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
   log_verbose "    -p <name=value>, --param <name=value>    Sets variable before tasks are executed"
   log_verbose "    -e <name=value>, --env <name=value>    Sets environment variable before tasks are executed"
@@ -106,6 +108,12 @@ declare -r koshu_color_reset="\033[0m"
 function koshu_log () {
   [[ $koshu_param_silent = true ]] || {
     koshu_log_color=koshu_color_${1}; echo -e "${koshu_color_reset}${!koshu_log_color}${*:2}${koshu_color_reset}";
+  }
+}
+
+function koshu_log_verbose () {
+  [[ $koshu_param_verbose = false ]] || {
+    koshu_log gray "$@"
   }
 }
 
@@ -349,6 +357,9 @@ for parser_option in "${parser_options[@]}"; do
       ;;
     "s" | "silent" )
       koshu_param_silent=true
+      ;;
+    "v" | "verbose" )
+      koshu_param_verbose=true
       ;;
     * )
       koshu_print_usage >&2

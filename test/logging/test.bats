@@ -1,39 +1,45 @@
 #!/usr/bin/env bats
 
-@test "logs verbose level message" {
+@test "logs message" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
 
   [[ "$output" == *"log_default"* ]]
 }
 
-@test "logs verbose level message" {
+@test "does not log verbose level message" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
 
-  [[ "$output" == *"verbose"* ]]
+  [[ "$output" != *"log_verbose"* ]]
+}
+
+@test "logs verbose level message" {
+  run "$KOSHU_SOURCE_DIR/koshu.sh" default --verbose --file "$BATS_TEST_DIRNAME/koshufile"
+
+  [[ "$output" == *"log_verbose"* ]]
 }
 
 @test "logs success level message" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
 
-  [[ "$output" == *"success"* ]]
+  [[ "$output" == *"log_success"* ]]
 }
 
 @test "logs info level message" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
 
-  [[ "$output" == *"info"* ]]
+  [[ "$output" == *"log_info"* ]]
 }
 
 @test "logs warn level message" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
 
-  [[ "$output" == *"warn"* ]]
+  [[ "$output" == *"log_warn"* ]]
 }
 
 @test "logs error level message" {
   run "$KOSHU_SOURCE_DIR/koshu.sh" default --file "$BATS_TEST_DIRNAME/koshufile"
 
-  [[ "$output" == *"error"* ]]
+  [[ "$output" == *"log_error"* ]]
 }
 
 @test "prints colored messages" {
