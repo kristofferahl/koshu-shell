@@ -236,7 +236,7 @@ task default {
   echo 'Hello world!'
 }
 " > "$koshu_param_taskfile"
-  log_info 'Created koshufile'
+  log_info "Created koshufile ($koshu_param_taskfile)"
   else
     log_warn "Koshufile already exists ($koshu_param_taskfile)"
   fi
@@ -299,7 +299,7 @@ function koshu_run () {
       done
     else
       koshu_print_usage
-      log_info "Run \"koshu help\" for more info."
+      log_info "Run 'koshu help' for more info."
       koshu_exit "Task '$t' is not defined. Available tasks: $(koshu_array_print koshu_available_tasks[@])" 1
     fi
   done
