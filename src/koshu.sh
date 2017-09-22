@@ -65,29 +65,29 @@ function koshu_print_usage () {
 function koshu_print_help () {
   koshu_print_logo
   koshu_print_usage
-  log_verbose
-  log_verbose "  The first argument must be a <command> or a <task> where"
-  log_verbose "  the value is the name of a task you wish to execute"
-  log_verbose "  or the name of a koshu command."
-  log_verbose
-  log_verbose "  commands:"
-  log_verbose "    init                        Initialized koshu"
-  log_verbose "    help                        Displays this help message"
-  log_verbose "    version                     Displays the version number"
-  log_verbose "    tasks                       Lists available tasks"
-  log_verbose "    run <task1> <task2>         Run task"
-  log_verbose
-  log_verbose "  options:"
-  log_verbose "    -s, --silent                Suppress output from koshu"
-  log_verbose "    -v, --verbose               Show verbose output from koshu"
-  log_verbose "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
-  log_verbose "    -p <name=value>, --param <name=value>    Sets variable before tasks are executed"
-  log_verbose "    -e <name=value>, --env <name=value>    Sets environment variable before tasks are executed"
-  log_verbose
-  log_verbose "  examples:"
-  log_verbose "    ./koshu.sh compile"
-  log_verbose "    ./koshu.sh test:all --file ./path/to/koshufile"
-  log_verbose
+  log_info
+  log_info "  The first argument must be a <command> or a <task> where"
+  log_info "  the value is the name of a task you wish to execute"
+  log_info "  or the name of a koshu command."
+  log_info
+  log_info "  commands:"
+  log_info "    init                        Initialized koshu"
+  log_info "    help                        Displays this help message"
+  log_info "    version                     Displays the version number"
+  log_info "    tasks                       Lists available tasks"
+  log_info "    run <task1> <task2>         Run task"
+  log_info
+  log_info "  options:"
+  log_info "    -s, --silent                Suppress output from koshu"
+  log_info "    -v, --verbose               Show verbose output from koshu"
+  log_info "    -f <file>, --file <file>    Specifies the path to the koshufile (default ./koshufile)"
+  log_info "    -p <name=value>, --param <name=value>    Sets variable before tasks are executed"
+  log_info "    -e <name=value>, --env <name=value>    Sets environment variable before tasks are executed"
+  log_info
+  log_info "  examples:"
+  log_info "    ./koshu.sh compile"
+  log_info "    ./koshu.sh test:all --file ./path/to/koshufile"
+  log_info
 }
 
 # shellcheck disable=SC2034
