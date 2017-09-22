@@ -236,8 +236,9 @@ task default {
   echo 'Hello world!'
 }
 " > "$koshu_param_taskfile"
+  log_info 'Created koshufile'
   else
-    log_verbose "Koshufile already exists ($koshu_param_taskfile)"
+    log_warn "Koshufile already exists ($koshu_param_taskfile)"
   fi
 }
 
