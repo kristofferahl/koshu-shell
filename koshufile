@@ -19,7 +19,7 @@ test () {
   bats -p ${tests[*]}
 }
 
-params test:docker debug
+desc test:docker param debug
 test:docker () {
   declare -a versions=('3.2.57' '4.0.44' '4.3.48')
   declare -a skipping=('3.0.22' '4.4.0')

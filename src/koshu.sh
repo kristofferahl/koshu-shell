@@ -18,8 +18,7 @@ shopt -s expand_aliases
 
 alias task='function'
 alias depends_on='koshu_exec_task'
-alias global_params='koshu_allow_global_param'
-alias params='koshu_allow_param'
+alias desc='koshu_describe'
 alias color='koshu_log'
 alias log='koshu_log default [koshu] '
 alias log_verbose='koshu_log_verbose [koshu] '
@@ -187,6 +186,21 @@ function koshu_expand_path () {
     cd "$OLDPWD"
     echo "$dirname/$(basename "$1")"
   } || echo "$1"
+}
+
+function koshu_describe () {
+  local task="${1:?}"
+  local topic="${2:?}"
+  local args=(${@:3})
+  if [[ "$task" == "global" ]]; then
+    case $topic in
+      'param' ) koshu_allow_global_param $task ${args[*]};;
+    esac
+  else
+    case $topic in
+      'param' ) koshu_allow_param $task ${args[*]};;
+    esac
+  fi
 }
 
 function koshu_allow_global_param () {

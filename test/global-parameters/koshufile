@@ -4,18 +4,19 @@ p1='default value'
 p2='default value'
 p3='default value'
 
-global_params p1 p2
+desc global param p1
+desc global param p2
 
 task global_only {
   echo "$p1.$p2.$p3."
 }
 
-params global_and_specific p3
+desc global_and_specific param p3
 task global_and_specific {
   echo "$p1.$p2.$p3."
 }
 
-params specific_only p4
+desc specific_only param p4
 task specific_only {
   echo "$p1.$p2.$p3.$p4."
 }

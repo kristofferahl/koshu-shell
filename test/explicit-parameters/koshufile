@@ -4,22 +4,22 @@ p1='default value'
 p2='default value'
 p3='default value'
 
-params all p1 p2 p3
+desc all param p1 p2 p3
 task all {
   echo "$p1.$p2.$p3."
 }
 
-params single p2
+desc single param p2
 task single {
   echo "$p1.$p2.$p3."
 }
 
-params outer p1
+desc outer param p1
 task outer {
   depends_on inner
 }
 
-params inner p2 p3
+desc inner param p2 p3
 task inner {
   echo "$p1.$p2.$p3."
 }
