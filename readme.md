@@ -105,17 +105,19 @@ It is now possible to whitelist the parameters of each task. If whitelisting is 
 
 ### Global whitelisting
 
-The parameters specified using the `global_params` keyword will be accepted by all tasks.
+Parameters specified using `desc global param` will be accepted by all tasks.
 
-    global_params <variablename> [<variablename> ...]
+    desc global param <variablename> [<variablename> ...]
 
 ### Task Whitelisting
 
-    params <taskname> <variablename> [<variablename> ...]
+Parameters specified using `desc <taskname> param` will be accepted by that task only.
+
+    desc <taskname> param <variablename> [<variablename> ...]
 
 Here's an example:
 
-    params build service
+    desc build param service
     task build {
       echo "Building service '$service'"
     }
@@ -125,6 +127,12 @@ Here's an example:
 If a value includes spaces you need to quote it!
 
     ./koshu.sh <taskname> --param foo='some value for foo' --env BAR='some value for BAR'
+
+### Output
+
+You may suppress output from koshu by specifying the `-s` or `--silent` option.
+
+In contrast, you may also show verbose output from koshu by specifying the `-v` or `--verbose` option.
 
 ## Help
 
