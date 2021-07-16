@@ -4,7 +4,10 @@
 sourceDir="${here:?}/src"
 testDir="${here:?}/test"
 
+testing=false
 debug=true
+
+desc global param testing
 
 export KOSHU_SOURCE_DIR=$sourceDir
 
@@ -19,7 +22,10 @@ test () {
   bats -p ${tests[*]}
 }
 
+desc test:docker purpose 'Used to run test in a docker container'
 desc test:docker param debug
+desc test:docker example '-p debug=false'
+
 test:docker () {
   declare -a versions=('3.2.57' '4.0.44' '4.3.48')
   declare -a skipping=('3.0.22' '4.4.0')

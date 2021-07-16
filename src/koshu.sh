@@ -89,6 +89,26 @@ function koshu_print_help () {
   log_info
 }
 
+function koshu_print_tasks () {
+  log_info "Available tasks:"
+  for task in "${koshu_available_tasks[@]}"; do
+    local params=()
+    for param in "${koshu_allowed_params[@]}"; do
+      local parts=(${param//#/ })
+      local task_name="${parts[0]}"
+      local param_name="${parts[1]}"
+      if [[ "$task#$param_name" == "$param" ]] || [[ "$task_name" == "koshu_global_param" ]]; then
+        params+=($param_name)
+      fi
+    done
+    if [[ "$koshu_param_verbose" == "true" ]]; then
+      log_info "$task\n\n   purpose : Used to run tests in a docker container\n     param : $(printf '%s ' "${params[@]}")\n   example : ./koshu.sh $task_name -p debug=false\n"
+    else
+      log_info "  - $task"
+    fi
+  done
+}
+
 # shellcheck disable=SC2034
 declare -r koshu_color_default=''
 # shellcheck disable=SC2034
@@ -199,6 +219,8 @@ function koshu_describe () {
   else
     case $topic in
       'param' ) koshu_allow_param $task ${args[*]};;
+      # 'purpose' ) echo "Adding purpose $task: ${args[*]}";;
+      # 'example' ) echo "Adding example $task: ${args[*]}";;
     esac
   fi
 }
@@ -401,7 +423,8 @@ for parser_command in "${parser_commands[@]}"; do
         ;;
       "tasks" )
         koshu_bootstrap
-        koshu_exit "Available tasks: $(koshu_array_print koshu_available_tasks[@])" 0
+        koshu_print_tasks
+        koshu_exit "" 0
         ;;
       "run" )
         koshu_param_tasklist=("${parser_commands[@]:1}")
